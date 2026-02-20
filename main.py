@@ -15,11 +15,11 @@ import torch
 sam3_root = os.path.join(os.path.dirname(sam3.__file__), "..")
 
 # Load the model
-model = build_sam3_image_model()
+model = build_sam3_image_model(checkpoint_path="sam3_weights/sam3.pt", load_from_HF=False)
 
 #image
 
-image = Image.open("/home/toms.zinars/tomass/construction_photos/2.jpg")
+image = Image.open("/home/toms.zinars/tomass/construction_photos/stock_photos/2.jpg")
 width, height = image.size
 processor = Sam3Processor(model, confidence_threshold=0.5)
 inference_state = processor.set_image(image)

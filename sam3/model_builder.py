@@ -643,6 +643,7 @@ def download_ckpt_from_hf():
     SAM3_CFG_NAME = "config.json"
     _ = hf_hub_download(repo_id=SAM3_MODEL_ID, filename=SAM3_CFG_NAME)
     checkpoint_path = hf_hub_download(repo_id=SAM3_MODEL_ID, filename=SAM3_CKPT_NAME)
+    print(f"Downloaded SAM3 checkpoint from Hugging Face: {checkpoint_path}")
     return checkpoint_path
 
 

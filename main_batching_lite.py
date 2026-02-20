@@ -40,6 +40,9 @@ inputs = processor(images=images, text=text_prompts, return_tensors="pt").to(dev
 with torch.no_grad():
     outputs = model(**inputs)
 
+# print("_______________outputs______________________")
+# print(outputs)
+
 # Post-process results for both images
 results = processor.post_process_instance_segmentation(
     outputs,
@@ -47,6 +50,8 @@ results = processor.post_process_instance_segmentation(
     mask_threshold=0.5,
     target_sizes=inputs.get("original_sizes").tolist()
 )
+# print("_______________results______________________")
+# print(results)
 
 for i in range(len(results)):
     print(f"Image {i}: {len(results[i]['masks'])} objects found")
