@@ -6,13 +6,33 @@ from PIL import Image
 from sam3.visualization_utils import plot_results
 import matplotlib.pyplot as plt
 
+import torch.nn.functional as F
+
 def merge_results(results):
-    merged = {
-        "scores": torch.cat([r["scores"] for r in results], dim=0),
-        "boxes":  torch.cat([r["boxes"] for r in results], dim=0),
-        "masks":  torch.cat([r["masks"] for r in results], dim=0),
+    scores = []
+    boxes = []
+    masks = []
+
+    # making sure that we dont pass along empty batches
+    for r in results:
+        if r["masks"].numel() == 0:
+            continue  # skip empty detections
+
+        scores.append(r["scores"])
+        boxes.append(r["boxes"])
+        masks.append(r["masks"])
+
+    # if no batch returns a mask
+    if len(masks) == 0:
+        return {"scores": torch.empty(0),
+                "boxes": torch.empty(0),
+                "masks": torch.empty(0)}
+
+    return {
+        "scores": torch.cat(scores, dim=0),
+        "boxes": torch.cat(boxes, dim=0),
+        "masks": torch.cat(masks, dim=0),
     }
-    return merged
 
 
 
@@ -23,19 +43,17 @@ processor = Sam3Processor.from_pretrained("facebook/sam3")
 
 #image
 
-image = Image.open("/home/toms.zinars/tomass/construction_photos/rosbag_fisheye/2.png")
+image = Image.open("/home/toms.zinars/tomass/construction_photos/stock_photos/2.jpg")
 # ja CUDA out of memory:
+
 image = image.resize((2024,1520))
 width, height = image.size
 
 images = []
 
-text_prompts = ["cobblestone", "building facade"]
+text_prompts = ["concrete", "ceiling", "pipe or metal", "car or person"]
 
-for i in range(text_prompts.__len__()):
-    images.append(image)
-
-inputs = processor(images=images, text=text_prompts, return_tensors="pt").to(device)
+inputs = processor(images=[image] * len(text_prompts), text=text_prompts, return_tensors="pt").to(device)
 
 with torch.no_grad():
     outputs = model(**inputs)

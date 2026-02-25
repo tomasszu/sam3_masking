@@ -27,7 +27,7 @@ inference_state = processor.set_image(image)
 #Text
 
 processor.reset_all_prompts(inference_state)
-inference_state = processor.set_text_prompt(state=inference_state, prompt="column")
+inference_state = processor.set_text_prompt(state=inference_state, prompt="pipe")
 
 img0 = image.copy()
 plot_results(img0, inference_state)
