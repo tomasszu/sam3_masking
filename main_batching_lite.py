@@ -43,15 +43,16 @@ processor = Sam3Processor.from_pretrained("facebook/sam3")
 
 #image
 
-image = Image.open("/home/toms.zinars/tomass/construction_photos/stock_photos/2.jpg")
+image = Image.open("/home/toms.zinars/tomass/data/rosbags/rosbag2_2025_09_09-19_49_04_converted_bag/img_946686987100236510.png")
 # ja CUDA out of memory:
 
 image = image.resize((2024,1520))
 width, height = image.size
 
 images = []
-
-text_prompts = ["concrete", "ceiling", "pipe or metal", "car or person"]
+# 
+text_prompts = ["concrete", "painted wall", "windows/frames", "scaffolding", "people", "sand and gravel", "stairs", "tarps/plastic sheeting", "construction equipment"]
+# text_prompts = ["concrete", "ceiling", "pipe or metal", "car or person"]
 
 inputs = processor(images=[image] * len(text_prompts), text=text_prompts, return_tensors="pt").to(device)
 
